@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <stdlib.h>
-
+/*
+The function checks if the current character in the input is a space or newliner or tab or string terminator
+*/
 int isDelimiterCharacter(char *input)
 {
     switch (*input)
@@ -19,10 +21,15 @@ int isDelimiterCharacter(char *input)
     }
 }
 
+/*
+The function will split the input into arguments
+eg. if the input is "cat shell.c" then args[0] will store the address of string "cat" and args[1] will store the address of string "shell.c"
+*/
 void normalizeCommand(char *input, char **args)
 {
     while (*input != '\0')
     {
+        // mark delimiter characters as string termination so that args can reference only the word in the input
         while (isDelimiterCharacter(input))
             *input++ = '\0';
         *args++ = input;
@@ -31,28 +38,35 @@ void normalizeCommand(char *input, char **args)
     }
     *args = '\0';
 }
-
-void executeCommand(char **argv)
+/*
+The function creates a child process and executes the input command
+*/
+void executeCommand(char **args)
 {
-    pid_t pid;
     int status;
 
-    if ((pid = fork()) < 0)
-    { /* fork a child process           */
-        printf("*** ERROR: forking child process failed\n");
-        exit(1);
-    }
-    else if (pid == 0)
-    { /* for the child process:         */
-        if (execvp(*argv, argv) < 0)
-        { /* execute the command  */
-            printf("*** ERROR: exec failed\n");
+    // fork new child process
+    pid_t pid = fork();
+
+    if (pid == 0)
+    {
+        // execute the command with the arguments
+        if (execvp(*args, args) < 0)
+        {
+            printf("Failed to execute the command!\n");
             exit(1);
         }
     }
+    else if (pid < 0)
+    {
+        printf("Child process did not forked!\n");
+        exit(1);
+    }
     else
-    {                                /* for the parent:      */
-        while (wait(&status) != pid) /* wait for completion  */
+    {
+        // The child process pid is known to the parent process
+        // Wait the parent process till the child process has completed execution of the command.
+        while (wait(&status) != pid)
             ;
     }
 }
@@ -68,6 +82,7 @@ void main()
         gets(input);
         printf("\n");
         normalizeCommand(input, args);
+        // if the string has a substring as exit then exit the shell
         if (strstr(input, "exit") != NULL)
         {
             exit(0);

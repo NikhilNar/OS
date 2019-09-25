@@ -68,7 +68,7 @@ void main()
         gets(input);
         printf("\n");
         normalizeCommand(input, args);
-        if (strstr(normalizedCommand, "exit") != NULL)
+        if (strstr(input, "exit") != NULL)
         {
             exit(0);
         }

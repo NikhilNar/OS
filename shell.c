@@ -22,7 +22,7 @@ void normalizeCommand(char *input, char **args)
     while (*input != '\0')
     {
         while (isDelimiterCharacter(input))
-            *input = '\0';
+            *input++ = '\0';
         *args++ = input;
         while (!isDelimiterCharacter(input) && *input != '\0')
             input++;

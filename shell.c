@@ -12,8 +12,6 @@ int isDelimiterCharacter(char *input)
         return 1;
     case '\t':
         return 1;
-    case '\0':
-        return 1;
     default:
         return 0;
     }
@@ -26,7 +24,7 @@ void normalizeCommand(char *input, char **args)
         while (isDelimiterCharacter(input))
             *input = '\0';
         *args++ = input;
-        while (!isDelimiterCharacter(input))
+        while (!isDelimiterCharacter(input) && *input != '\0')
             input++;
     }
     *args = '\0';

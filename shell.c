@@ -19,7 +19,7 @@ int isDelimiterCharacter(char *input)
     }
 }
 
-void normalizedCommand(char *input, char **args)
+void normalizeCommand(char *input, char **args)
 {
     while (*input != '\0')
     {

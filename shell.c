@@ -32,7 +32,7 @@ void normalizeCommand(char *input, char **args)
     *args = '\0';
 }
 
-void executeCommand(char *argv)
+void executeCommand(char **argv)
 {
     pid_t pid;
     int status;
